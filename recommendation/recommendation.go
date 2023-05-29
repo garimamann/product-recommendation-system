@@ -2,10 +2,10 @@ package recommendation
 
 import (
 	"math"
-	
-	"sort"
-"fmt"
+
 	"../testdata"
+	"fmt"
+	"sort"
 )
 
 type RecommendationSystem struct{}
@@ -14,7 +14,7 @@ func NewRecommendationSystem() *RecommendationSystem {
 	return &RecommendationSystem{}
 }
 
-func (rs *RecommendationSystem) GetRecommendations(userId , pageLimit, page int) ([]testdata.Product, error) {
+func (rs *RecommendationSystem) GetRecommendations(userId, pageLimit, page int) ([]testdata.Product, error) {
 	recommendations := []testdata.Product{}
 
 	userThemes, err := testdata.GetUserThemes(userId)
@@ -31,7 +31,6 @@ func (rs *RecommendationSystem) GetRecommendations(userId , pageLimit, page int)
 			selectedThemes[userTheme] = 10
 		}
 
-		
 		for i := 0; i < 3-len(userThemes); i++ {
 			randomTheme := testdata.FetchRandomTheme()
 			selectedThemes[randomTheme] = 5
@@ -44,12 +43,12 @@ func (rs *RecommendationSystem) GetRecommendations(userId , pageLimit, page int)
 	}
 
 	distributedProducts := make(map[testdata.Theme]int)
-for theme, weight := range selectedThemes {
-	productCount := int(math.Round(float64(weight*pageLimit) / float64(totalWeight)))
-	distributedProducts[theme] = productCount
-}
+	for theme, weight := range selectedThemes {
+		productCount := int(math.Round(float64(weight*pageLimit) / float64(totalWeight)))
+		distributedProducts[theme] = productCount
+	}
 
-fmt.Println(distributedProducts)
+	fmt.Println(distributedProducts)
 
 	sortedThemes := make([]testdata.Theme, 0, len(distributedProducts))
 	for theme := range distributedProducts {
@@ -59,7 +58,7 @@ fmt.Println(distributedProducts)
 		return distributedProducts[sortedThemes[i]] > distributedProducts[sortedThemes[j]]
 	})
 
-	carry := 0;
+	carry := 0
 
 	for _, theme := range sortedThemes {
 		count := distributedProducts[theme] + carry
@@ -72,11 +71,8 @@ fmt.Println(distributedProducts)
 
 	if len(recommendations) > pageLimit {
 		recommendations = recommendations[:pageLimit]
-		
+
 	}
 
-
-	return recommendations,nil
+	return recommendations, nil
 }
-
-	
